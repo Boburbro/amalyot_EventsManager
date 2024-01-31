@@ -59,11 +59,24 @@ class AppProvider with ChangeNotifier {
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
     );
-    return {"a": r.body};
+    Map msg = jsonDecode(r.body);
+    return msg;
+  }
+
+  Future<void> acceptUser(String userId) async {
+    Uri url =
+        Uri.parse("https://backend.emg.abdurakhman.uz/admin/postinfo/$userId");
+    final r = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    Map msg = jsonDecode(r.body);
+    if (msg['status'] != 200) {
+      throw MyException(message: "Bad! 404 error");
+    }
   }
 
   Future<bool> isAuth() async {
-    print("=== $token");
     if (token == null) {
       return false;
     }
