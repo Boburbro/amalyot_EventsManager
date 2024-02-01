@@ -1,8 +1,9 @@
-import 'package:amalyot_uchun/providers/appProvider.dart';
-import 'package:amalyot_uchun/widget/wait.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+
+import '../providers/appProvider.dart';
+import '../widget/wait.dart';
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -30,7 +31,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
     var user =
         await Provider.of<AppProvider>(ctx, listen: false).getUser(userId);
 
-
     // ignore: use_build_context_synchronously
     Navigator.of(ctx).pop();
     if (user['status'] != 200) {
@@ -47,7 +47,10 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   isScanned = false;
                 });
               },
-              child: const Text("Close"),
+              child: const Text(
+                "Close",
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         ),
@@ -57,12 +60,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
     String access = "";
     user['msg']['access'] == null ? access = "yo'q" : access = "bor";
     var userData =
-        "${user['msg']['comes']}!\nIshtrokch: ${user['msg']['name']} ${user['msg']['surname']}\nJamo: ${user['msg']['firm']}\nRuxsat $access";
+        "Ishtrokch: ${user['msg']['name']} ${user['msg']['surname']}\nFirma: ${user['msg']['firm']}\nRuxsat $access";
     // ignore: use_build_context_synchronously
     showDialog(
       context: ctx,
       builder: (ctx1) => AlertDialog(
         content: Text(userData),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
           ElevatedButton(
             onPressed: () {
@@ -71,36 +75,36 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 isScanned = false;
               });
             },
-            child: const Text("Close"),
+            child: const Text("Close", style: TextStyle(color: Colors.red)),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx1).pop();
-              WaitWidget(ctx);
-           
-              Provider.of<AppProvider>(ctx1, listen: false)
-                  .acceptUser(userId)
-                  .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Successful"),
-                            ),
-                          )
+          if (access != "bor")
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(ctx1).pop();
+                WaitWidget(ctx);
 
-                    
+                Provider.of<AppProvider>(ctx1, listen: false)
+                    .acceptUser(userId)
+                    .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Successful"),
+                          ),
+                        ))
+                    .onError((error, stackTrace) =>
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Bad! 404 error"),
+                          ),
+                        ));
 
-                      ).onError((error, stackTrace) =>ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Bad! 404 error"),
-                            ),
-                          ));
-
-              setState(() {
-                isScanned = false;
-              });
-              Navigator.of(ctx).pop();
-            },
-            child: const Text("Accept"),
-          ),
+                setState(() {
+                  isScanned = false;
+                });
+                Navigator.of(ctx).pop();
+              },
+              child:
+                  const Text("Access", style: TextStyle(color: Colors.green)),
+            ),
         ],
       ),
     );
@@ -123,24 +127,25 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("QR scanner"),
-          centerTitle: true,
+      appBar: AppBar(
+        title: const Text("QR scanner"),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 250,
+              height: 250,
+              child: QRView(
+                key: qrKey,
+                onQRViewCreated: (c) => qr(c, context),
+              ),
+            )
+          ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 250,
-                height: 250,
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: (c) => qr(c, context),
-                ),
-              )
-            ],
-          ),
-        ));
+      ),
+    );
   }
 }

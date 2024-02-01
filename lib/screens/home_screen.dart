@@ -1,9 +1,11 @@
-import 'package:amalyot_uchun/providers/appProvider.dart';
-import 'package:amalyot_uchun/screens/auth.dart';
-import 'package:amalyot_uchun/screens/scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '/providers/appProvider.dart';
+import '/screens/auth.dart';
+import '/screens/scanner.dart';
+
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -12,7 +14,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("EventsManager"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -27,7 +29,7 @@ class Home extends StatelessWidget {
           )
         ],
       ),
-      body: const Center(child: Text("Body")),
+      body: const Center(child: Text("Welcome")),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.qr_code_scanner_rounded),
         onPressed: () => Navigator.of(context).push(

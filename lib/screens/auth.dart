@@ -1,8 +1,10 @@
-import 'package:amalyot_uchun/providers/appProvider.dart';
-import 'package:amalyot_uchun/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '/providers/appProvider.dart';
+import '/screens/home_screen.dart';
+
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -72,7 +74,7 @@ class _AuthState extends State<Auth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("AppBar"),
+        title: const Text("EventsManager"),
         centerTitle: true,
       ),
       body: Padding(

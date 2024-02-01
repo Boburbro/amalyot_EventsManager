@@ -33,6 +33,9 @@ class AppProvider with ChangeNotifier {
       }
       return;
     } catch (e) {
+      if (e.toString() == "Invalid email or password") {
+        rethrow;
+      }
       throw MyException(message: "Not Internet");
     }
   }

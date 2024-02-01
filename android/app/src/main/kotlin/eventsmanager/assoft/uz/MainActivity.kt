@@ -1,4 +1,4 @@
-package com.example.amalyot_uchun
+package eventsmanager.assoft.uz
 
 import io.flutter.embedding.android.FlutterActivity
 
