@@ -1,5 +1,5 @@
-import 'package:amalyot_uchun/providers/appProvider.dart';
-import 'package:amalyot_uchun/screens/home_screen.dart';
+import './providers/appProvider.dart';
+import './screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

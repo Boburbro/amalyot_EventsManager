@@ -4,12 +4,13 @@
 
 import 'dart:async';
 
-import 'package:amalyot_uchun/service/my_errors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '/service/my_errors.dart';
 
 class AppProvider with ChangeNotifier {
   String? token;
