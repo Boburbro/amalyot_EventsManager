@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '/providers/appProvider.dart';
 import '/screens/home_screen.dart';
 
-
 class Auth extends StatefulWidget {
   const Auth({super.key});
 
@@ -16,6 +15,7 @@ class Auth extends StatefulWidget {
 class _AuthState extends State<Auth> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController url = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
@@ -24,7 +24,7 @@ class _AuthState extends State<Auth> {
       return;
     }
     formKey.currentState!.save();
-    if (username.text.isEmpty || password.text.isEmpty) {
+    if (username.text.isEmpty || password.text.isEmpty || url.text.isEmpty) {
       return;
     }
 
@@ -44,10 +44,9 @@ class _AuthState extends State<Auth> {
     );
 
     Provider.of<AppProvider>(ctx, listen: false)
-        .logIn(username.text, password.text)
+        .logIn(username.text, password.text, url.text)
         .then((value) {
       Navigator.of(context).pop();
-
 
       Provider.of<AppProvider>(ctx, listen: false).checkToken().then(
             (value) => Navigator.of(ctx).pushReplacement(
@@ -85,6 +84,21 @@ class _AuthState extends State<Auth> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text("Url"),
+                  ),
+                  controller: url,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Bo'sh qolib ketdi!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),

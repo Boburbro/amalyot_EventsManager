@@ -14,9 +14,10 @@ import '/service/my_errors.dart';
 
 class AppProvider with ChangeNotifier {
   String? token;
+  String? server_url;
 
-  Future<void> logIn(String username, String password) async {
-    Uri url = Uri.parse("https://backend.emg.abdurakhman.uz/admin/login");
+  Future<void> logIn(String username, String password, String url_text) async {
+    Uri url = Uri.parse("https://$url_text/admin/login");
     var forBody = jsonEncode({"email": username, "password": password});
     try {
       final r = await http.post(
@@ -27,8 +28,10 @@ class AppProvider with ChangeNotifier {
       final data = jsonDecode(r.body);
       if (data['status'] == 200) {
         token = data['token'];
+        server_url = url_text;
         final prefs = await SharedPreferences.getInstance();
         prefs.setString("token", token!);
+        prefs.setString("url", url_text);
       } else {
         throw MyException(message: "Invalid email or password");
       }
@@ -42,7 +45,7 @@ class AppProvider with ChangeNotifier {
   }
 
   Future<bool> checkToken() async {
-    Uri url = Uri.parse("https://backend.emg.abdurakhman.uz/admin/checkToken");
+    Uri url = Uri.parse("https://$server_url/admin/checkToken");
     final r = await http.get(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -58,7 +61,7 @@ class AppProvider with ChangeNotifier {
 
   Future<Map> getUser(String userId) async {
     Uri url =
-        Uri.parse("https://backend.emg.abdurakhman.uz/admin/userinfo/$userId");
+        Uri.parse("https://$server_url/admin/userinfo/$userId");
     final r = await http.get(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -69,7 +72,7 @@ class AppProvider with ChangeNotifier {
 
   Future<void> acceptUser(String userId) async {
     Uri url =
-        Uri.parse("https://backend.emg.abdurakhman.uz/admin/postinfo/$userId");
+        Uri.parse("https://$server_url/admin/postinfo/$userId");
     final r = await http.post(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -81,7 +84,7 @@ class AppProvider with ChangeNotifier {
   }
 
   Future<bool> isAuth() async {
-    if (token == null) {
+    if (token == null || token == null) {
       return false;
     }
     var check = await checkToken();
@@ -95,6 +98,7 @@ class AppProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("token")) {
       token = prefs.getString("token");
+      server_url = prefs.getString("url");
     }
   }
 
@@ -102,5 +106,6 @@ class AppProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
     token = null;
+    server_url = null;
   }
 }
